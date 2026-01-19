@@ -1,0 +1,601 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 14px;
+  --background: #ffffff;
+  --foreground: #212529;
+  --card: #f5f5f5;
+  --card-foreground: #212529;
+  --popover: #ffffff;
+  --popover-foreground: #212529;
+  --primary: #20a0ef;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #212529;
+  --muted: #f8f9fa;
+  --muted-foreground: #6c757d;
+  --accent: #e7f3ff;
+  --accent-foreground: #212529;
+  --destructive: #dc3545;
+  --destructive-foreground: #ffffff;
+  --border: #e3e6ed;
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #20a0ef;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: #f5f5f5;
+  --sidebar-foreground: #868e96;
+  --sidebar-primary: #212529;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e9ecef;
+  --sidebar-accent-foreground: #212529;
+  --sidebar-border: #e3e6ed;
+  --sidebar-ring: #20a0ef;
+  --success: #198754;
+  --success-foreground: #ffffff;
+  --warning: #ff8c00;
+  --warning-foreground: #ffffff;
+  --info: #0dcaf0;
+  --info-foreground: #212529;
+  --light: #f8f9fa;
+  --dark: #212529;
+  
+  /* Safe area insets for PWA/mobile devices */
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.544 0.15 25.7);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.708 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.708 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+  --warning: oklch(0.7 0.15 65);
+  --warning-foreground: oklch(0.985 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-light: var(--light);
+  --color-dark: var(--dark);
+}
+
+@theme inline {
+  /* Safe area utilities for mobile devices */
+  --padding-top-safe: env(safe-area-inset-top, 0px);
+  --padding-bottom-safe: env(safe-area-inset-bottom, 0px);
+  --padding-left-safe: env(safe-area-inset-left, 0px);
+  --padding-right-safe: env(safe-area-inset-right, 0px);
+  
+  /* Mobile navbar height accounting for safe area */
+  /*--mobile-navbar-height: calc(60px + var(--padding-top-safe));*/
+  --mobile-navbar-height: calc(60px + env(safe-area-inset-top));
+  
+  /* Main content height (viewport minus mobile navbar) - uses 100vh to include safe areas */
+  --mobile-content-height: calc(100vh - var(--mobile-navbar-height));
+  
+  /* Modal positioning and sizing for mobile */
+  --mobile-modal-top: var(--mobile-navbar-height);
+  --mobile-modal-height: calc(100vh - var(--mobile-navbar-height));
+  --mobile-modal-height-with-safe-bottom: calc(100vh - var(--mobile-navbar-height) - var(--padding-bottom-safe));
+  
+  /* Bottom sheet modal height (leaves space for navbar at top) */
+  --mobile-bottom-sheet-height: calc(100vh - var(--mobile-navbar-height));
+  --mobile-bottom-sheet-max-height: calc(90vh - var(--mobile-navbar-height));
+  
+  /* Mobile sidebar positioning and sizing */
+  --mobile-sidebar-top: var(--mobile-navbar-height);
+  --mobile-sidebar-height: calc(100vh - var(--mobile-navbar-height));
+  --mobile-sidebar-height-with-safe-bottom: calc(100vh - var(--mobile-navbar-height) - var(--padding-bottom-safe));
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground;
+    /* Prevent Safari bounce effect (rubber-band scrolling) */
+    overscroll-behavior: none;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior-y: none;
+    /* Fill entire screen including safe areas */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  html {
+    /* Extend behind safe areas on mobile */
+    padding: 0;
+    margin: 0;
+    /* Device corner radius for PWA - set background that shows through corners */
+    overflow: hidden;
+    /* Use black background to make rounded corners visible against device */
+    background: #000000;
+    /* Extend to full device height including status bar */
+    height: 100vh;
+  }
+  
+  body {
+    /* Prevent extra padding/margin that creates gaps */
+    padding: 0;
+    margin: 0;
+    position: relative;
+    /* Device corner radius for PWA - approximate device corners */
+    overflow: hidden;
+    /* Extend to full device height including status bar */
+    min-height: 100vh;
+  }
+  
+  /* Root container fills viewport edge-to-edge with rounded corners */
+  #root {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    width: 100%;
+    position: relative;
+    /* Apply device corner radius on mobile/PWA */
+    overflow: hidden;
+  }
+  
+  /* Add rounded corners to match device on mobile - only in PWA mode */
+  @media (max-width: 768px) {
+    html {
+      /* Corners at the very top of the device screen - uses CSS variable set by PWA detection */
+      border-radius: var(--device-radius, 0px);
+    }
+    
+    body, #root {
+      border-radius: var(--device-radius, 0px);
+      overflow: hidden;
+    }
+  }
+  
+  /* Hide specific Figma-generated placeholder divs */
+  .css-cjnrt2,
+  .css-wc1msa,
+  .css-ez8men,
+  .css-qhd53h,
+  .css-trglf0,
+  .css-r0azwh {
+    display: none !important;
+  }
+  
+  /* Force portrait orientation for mobile/PWA */
+  @media screen and (orientation: landscape) and (max-width: 1024px) {
+    html {
+      transform: rotate(-90deg);
+      transform-origin: left top;
+      width: 100vh;
+      height: 100vw;
+      overflow-x: hidden;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Scale up font-size on mobile devices for better readability and touch targets */
+@media (max-width: 767px) {
+  :root {
+    --font-size: 16px;
+  }
+}
+
+/**
+ * Custom scrollbar styles - responsive behavior for desktop and mobile
+ */
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+
+  /* Desktop scrollbar styling - visible but subtle */
+  @media (min-width: 768px) {
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.5);
+      border-radius: 3px;
+      border: none;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.7);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+  }
+
+  /* Mobile scrollbar styling - completely hidden */
+  @media (max-width: 767px) {
+    .custom-scrollbar {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* Internet Explorer and Edge */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, and Opera */
+    }
+  }
+
+  /**
+   * Scroll fade effect - shows fade overlay when content overflows
+   */
+  .scroll-fade-container {
+    position: relative;
+  }
+
+  .scroll-fade-container:hover .scroll-fade-overlay {
+    opacity: 1;
+  }
+
+  .scroll-fade-container .scroll-fade-overlay {
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  /* Show fade effect when scrollable content is present */
+  .scroll-fade-container:has([scrollWidth]:not([scrollWidth="clientWidth"])) .scroll-fade-overlay {
+    opacity: 1;
+  }
+
+  /* Alternative approach using JavaScript-detectable class */
+  .scroll-fade-container.has-overflow .scroll-fade-overlay {
+    opacity: 1;
+  }
+
+  /**
+   * Safe area utilities for mobile devices
+   */
+  .pt-safe-top {
+    padding-top: var(--padding-top-safe);
+  }
+
+  .pb-safe-bottom {
+    padding-bottom: var(--padding-bottom-safe);
+  }
+
+  .pl-safe-left {
+    padding-left: var(--padding-left-safe);
+  }
+
+  .pr-safe-right {
+    padding-right: var(--padding-right-safe);
+  }
+
+  .p-safe {
+    padding-top: var(--padding-top-safe);
+    padding-bottom: var(--padding-bottom-safe);
+    padding-left: var(--padding-left-safe);
+    padding-right: var(--padding-right-safe);
+  }
+
+  /**
+   * Mobile navbar spacing utility
+   * Accounts for navbar height (60px) + safe area inset top
+   */
+  .pt-mobile-nav {
+    padding-top: var(--mobile-navbar-height);
+  }
+
+  .mt-mobile-nav {
+    margin-top: var(--mobile-navbar-height);
+  }
+  
+  /**
+   * Mobile content height utility
+   * Full viewport height minus mobile navbar height
+   */
+  .h-dvh{
+    height: var(--mobile-content-height);
+    /*height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));*/
+  }
+
+  .h-mobile-content {
+    height: calc(100vh - var(--mobile-navbar-height));
+  }
+
+  /**
+   * Mobile sidebar positioning utilities
+   * Positions sidebar below the mobile navbar
+   */
+  .top-mobile-nav {
+    top: var(--mobile-sidebar-top);
+  }
+
+  .h-mobile-sidebar {
+    height: var(--mobile-sidebar-height);
+  }
+
+  .max-h-mobile-sidebar {
+    max-height: var(--mobile-sidebar-height);
+  }
+
+  /**
+   * Bottom sheet modal utilities
+   */
+  .h-bottom-sheet {
+    height: var(--mobile-bottom-sheet-height);
+  }
+
+  .max-h-bottom-sheet {
+    max-height: var(--mobile-bottom-sheet-max-height);
+  }
+
+  /* Desktop has no navbar, mobile has navbar + safe area */
+  @media (min-width: 768px) {
+    .pt-mobile-nav {
+      padding-top: 0;
+    }
+    
+    .mt-mobile-nav {
+      margin-top: 0;
+    }
+
+    .top-mobile-nav {
+      top: 0;
+    }
+
+    .h-mobile-sidebar {
+      height: 100vh;
+    }
+
+    .max-h-mobile-sidebar {
+      max-height: 100vh;
+    }
+
+    .h-bottom-sheet {
+      height: auto;
+    }
+
+    .max-h-bottom-sheet {
+      max-height: none;
+    }
+  }
+
+  /**
+   * Bottom sheet animation utilities
+   */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(100%);
+    }
+  }
+
+  /**
+   * Tooltip arrow styling to match menu design
+   * Override the hardcoded bg-primary and fill-primary classes from shadcn tooltip
+   * Apply borders to bottom-right sides, transparent on top-left for proper arrow appearance
+   */
+  
+  /* Target the specific tooltip arrow element structure */
+  [data-slot="tooltip-content"].bg-white [data-radix-tooltip-arrow],
+  [data-slot="tooltip-content"].bg-white > [data-radix-tooltip-arrow] {
+    background-color: var(--color-popover) !important;
+    fill: var(--color-popover) !important;
+    color: var(--color-popover) !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-top: 1px solid transparent !important;
+    border-left: 1px solid transparent !important;
+    border-bottom: 1px solid #e3e6ed !important;
+    border-right: 1px solid #e3e6ed !important;
+  }
+  
+  /* More specific targeting for the rotated arrow div with shadcn classes */
+  [data-slot="tooltip-content"].bg-white .bg-primary.fill-primary.rotate-45,
+  [data-slot="tooltip-content"].bg-white > .bg-primary.fill-primary.rotate-45 {
+    background-color: var(--color-popover) !important;
+    fill: var(--color-popover) !important;
+    color: var(--color-popover) !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-top: 1px solid transparent !important;
+    border-left: 1px solid transparent !important;
+    border-bottom: 1px solid #e3e6ed !important;
+    border-right: 1px solid #e3e6ed !important;
+  }
+  
+  /* Highest specificity fallback for navigation tooltips */
+  .bg-white.border-\[\\#e3e6ed\] [data-radix-tooltip-arrow],
+  .bg-white.shadow-lg [data-radix-tooltip-arrow] {
+    background-color: var(--color-popover) !important;
+    fill: var(--color-popover) !important;
+    color: var(--color-popover) !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-top: 1px solid transparent !important;
+    border-left: 1px solid transparent !important;
+    border-bottom: 1px solid #e3e6ed !important;
+    border-right: 1px solid #e3e6ed !important;
+  }
+
+  /* Target tooltips with popover background and sidebar borders (the navigation menu style) */
+  .bg-popover.border-sidebar-border [data-radix-tooltip-arrow],
+  .bg-popover.shadow-lg [data-radix-tooltip-arrow] {
+    background-color: var(--color-popover) !important;
+    fill: var(--color-popover) !important;
+    color: var(--color-popover) !important;
+    width: 16px !important;
+    height: 16px !important;
+    border-top: 1px solid transparent !important;
+    border-left: 1px solid transparent !important;
+    border-bottom: 1px solid var(--color-sidebar-border) !important;
+    border-right: 1px solid var(--color-sidebar-border) !important;
+  }
+}
