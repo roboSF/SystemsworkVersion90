@@ -1124,15 +1124,13 @@ export default function FormCreationPage({
                 active={true}
                 subItems={[
                   { label: "Entry", active: true },
-                  { label: "Authorization" },
-                  { label: "My Transactions" }
+                  { label: "Authorization" }
                 ]}
               />
               {sidebarOpen && expandedGroups.has('forms') && (
                 <div className="space-y-1">
                   <NavigationSubItem label="Entry" active={true} />
                   <NavigationSubItem label="Authorization" />
-                  <NavigationSubItem label="My Transactions" />
                 </div>
               )}
               

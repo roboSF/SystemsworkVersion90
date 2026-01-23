@@ -83,7 +83,7 @@ export default function MobilePushMenu({ isOpen, onClose, onNavigate, currentPag
                 />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-sidebar-foreground leading-tight">Stephen Hill</span>
+                <span className="text-md font-medium text-foreground leading-tight">Stephen Hill</span>
               </div>
             </div>
           </div>
@@ -101,8 +101,8 @@ export default function MobilePushMenu({ isOpen, onClose, onNavigate, currentPag
                         {/* Show sub-items directly as flat navigation items */}
                         {group.subItems.map((item) => {
                           const pageMapping: { [key: string]: 'list' | 'authorization' } = {
-                            'Entry': 'list',
-                            'Authorization': 'authorization'
+                            'Forms Entry': 'list',
+                            'Forms Authorization': 'authorization'
                           };
                           
                           const isActive = pageMapping[item.label] === currentPage;
@@ -129,7 +129,7 @@ export default function MobilePushMenu({ isOpen, onClose, onNavigate, currentPag
                     className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent transition-colors text-left"
                     onClick={onSettingsClick}
                   >
-                    <Settings className="h-4 w-4 text-muted-foreground" />
+                    <Settings className="h-5 w-5 text-muted-foreground" />
                     <span className="text-sm text-sidebar-foreground">Settings</span>
                   </button>
                 </div>

@@ -150,7 +150,7 @@ export const NavigationSubItem = ({ label, active = false, icon: Icon, isMobile 
     onClick={onClick}
   >
     {isMobile && Icon && (
-      <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-sidebar-primary' : 'text-sidebar-foreground'}`} />
+      <Icon className={`w-5 h-5 shrink-0 ${active ? 'text-sidebar-primary' : 'text-sidebar-foreground'}`} />
     )}
     <span className={`whitespace-nowrap ${active ? 'text-sidebar-primary font-medium' : 'text-sidebar-foreground'} ${isMobile ? 'text-sm' : 'text-xs'}`}>
       {label}

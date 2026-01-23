@@ -395,7 +395,7 @@ export default function App() {
   if (currentPage === 'create' && createFormType) {
     return (
       <>
-        <Toaster theme={currentTheme} richColors position="top-center" />
+        <Toaster theme={currentTheme} richColors position="bottom-center" offset="120px" closeButton duration={4000} />
         <MobilePushMenu 
           isOpen={mobileMenuOpen} 
           onClose={closeMobileMenu} 
@@ -441,7 +441,7 @@ export default function App() {
   if (currentPage === 'detail' && selectedFormId === '63') {
     return (
       <>
-        <Toaster theme={currentTheme} richColors position="top-center" />
+        <Toaster theme={currentTheme} richColors position="bottom-center" offset="120px" closeButton duration={4000} />
         <MobilePushMenu 
           isOpen={mobileMenuOpen} 
           onClose={closeMobileMenu} 
@@ -487,7 +487,7 @@ export default function App() {
   if (currentPage === 'authorization') {
     return (
       <>
-        <Toaster theme={currentTheme} richColors position="top-center" />
+        <Toaster theme={currentTheme} richColors position="bottom-center" offset="120px" closeButton duration={4000} />
         <MobilePushMenu 
           isOpen={mobileMenuOpen} 
           onClose={closeMobileMenu} 
@@ -531,7 +531,7 @@ export default function App() {
   if (currentPage === 'settings') {
     return (
       <>
-        <Toaster theme={currentTheme} richColors position="top-center" />
+        <Toaster theme={currentTheme} richColors position="bottom-center" offset="120px" closeButton duration={4000} />
         <MobilePushMenu 
           isOpen={mobileMenuOpen} 
           onClose={closeMobileMenu} 
@@ -574,7 +574,7 @@ export default function App() {
   // Default to forms list page
   return (
     <>
-      <Toaster theme={currentTheme} richColors position="top-center" />
+      <Toaster theme={currentTheme} richColors position="bottom-center" offset="120px" closeButton duration={4000} />
       <MobilePushMenu 
         isOpen={mobileMenuOpen} 
         onClose={closeMobileMenu} 

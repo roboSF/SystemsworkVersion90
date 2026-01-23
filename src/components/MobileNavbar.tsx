@@ -91,7 +91,7 @@ export default function MobileNavbar({
             {showBackButton ? (
               <button
                 onClick={onBackClick}
-                className="relative shrink-0 size-10 p-2 hover:bg-sidebar-accent rounded transition-colors"
+                className="relative shrink-0 size-10 flex items-center justify-center hover:bg-sidebar-accent rounded transition-colors"
                 aria-label="Go back"
               >
                 <ArrowLeft className="size-6 text-muted-foreground" />
@@ -99,7 +99,7 @@ export default function MobileNavbar({
             ) : (
               <button
                 onClick={onMenuClick}
-                className="relative shrink-0 size-6 p-0 hover:bg-sidebar-accent rounded transition-colors"
+                className="relative shrink-0 size-10 flex items-center justify-center hover:bg-sidebar-accent rounded transition-colors"
                 aria-label="Open menu"
               >
                 <HamburgerMenu />

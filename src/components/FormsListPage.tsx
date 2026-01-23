@@ -403,7 +403,7 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
 
   const SkeletonCard = () => {
     return (
-      <div className="bg-sidebar relative rounded-[10px] w-full border border-border">
+      <div className="bg-sidebar relative rounded-[10px] w-full border border-sidebar shadow-[0_0_12px_rgba(0,0,0,0.06)]">
         <div className="flex flex-row gap-4 items-top justify-start p-4">
           {/* Checkbox skeleton */}
           <div className="flex flex-col gap-[15px] h-20 items-start justify-start overflow-clip pb-[5px] pt-1 px-1">
@@ -509,10 +509,10 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
     
     return (
       <div 
-        className={`bg-sidebar relative rounded-[10px] w-full border ${isSelected ? 'border-primary ring-2 ring-ring ring-opacity-50' : 'border-border'} cursor-pointer hover:shadow-md transition-all`}
+        className={`bg-sidebar relative rounded-[10px] w-full border ${isSelected ? 'border-primary' : 'border-sidebar'} cursor-pointer shadow-[0_0_12px_rgba(0,0,0,0.06)] transition-all`}
         onClick={() => onFormClick(id)}
       >
-        <div className="flex flex-row gap-4 p-4">
+        <div className="flex flex-row gap-4 p-4 overflow-hidden">
           {/* Checkbox */}
           <div 
             className={`rounded size-4 border cursor-pointer flex items-center justify-center mt-1 flex-shrink-0 ${
@@ -525,45 +525,57 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
             {isSelected && <Check className="size-4 text-primary-foreground" />}
           </div>
 
-          <div className="flex flex-col gap-4 flex-grow">
-            <div className="flex flex-row gap-4 items-start justify-start">
+          <div className="flex flex-col gap-4 flex-grow min-w-0">
+            <div className="flex flex-row gap-4 items-start justify-start min-w-0">
               {/* Image */}
-              <div className="relative rounded-[10px] size-20 border border-border">
+              <div className="relative rounded-[10px] size-20 border border-border flex-shrink-0">
                 <div
                   className="absolute bg-[position:50%_50%] bg-[rgba(0,0,0,0.9)] bg-contain inset-0 rounded-[10px]"
                   style={{ backgroundImage: `url('${image}')` }}
                 />
                 {hasMultipleImages && (
-                  <div className="absolute flex flex-col font-['Roboto:Regular',_sans-serif] font-normal justify-center leading-[0] left-10 size-20 text-[#ffffff] text-[16px] text-center top-[39.8px] translate-x-[-50%] translate-y-[-50%]">
+                  <div className="absolute flex flex-col font-['Roboto:Regular',_sans-serif] font-normal justify-center leading-[0] left-1/2 top-1/2 size-20 text-[#ffffff] text-[16px] text-center -translate-x-1/2 -translate-y-1/2">
                     <p className="block leading-[1.5]">+1</p>
                   </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="basis-0 flex flex-col gap-4 grow items-start justify-start px-0 py-0 self-stretch">
-                <div className="flex flex-row items-start justify-between w-full">
-                  <div className="text-primary text-sm">{type}</div>
-                  <div className="flex items-center gap-2">
+              <div className="basis-0 flex flex-col gap-4 grow items-start justify-start px-0 py-0 self-stretch min-w-0">
+                <div className="flex flex-row items-start justify-between w-full min-w-0 gap-2">
+                  <div className="text-primary text-sm flex-shrink-0">{type}</div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     {badge && (
-                      <div className="bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded">
+                      <div className="bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap">
                         {badge}
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="text-foreground text-sm">
-                  #{id} | {date} | {description}
+                <div className="text-foreground text-sm flex items-center gap-2 flex-nowrap overflow-hidden min-w-0 w-full">
+                  <span className="whitespace-nowrap flex-shrink-0">#{id}</span>
+                  {date && (
+                    <>
+                      <span className="border-l border-border self-stretch flex-shrink-0"></span>
+                      <span className="whitespace-nowrap flex-shrink-0">{date}</span>
+                    </>
+                  )}
+                  {description && (
+                    <>
+                      <span className="border-l border-border self-stretch flex-shrink-0"></span>
+                      <span className="truncate min-w-0 block">{description}</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
             
             {/* Avatars and Amount - Full Width Row */}
-            <div className="flex flex-row items-center justify-between w-full">
-              <div className="flex flex-row items-center justify-start">
+            <div className="flex flex-row items-center justify-between w-full min-w-0 gap-2">
+              <div className="flex flex-row items-center justify-start min-w-0">
                 <AvatarGroup avatars={avatars} size="md" uniquePrefix={`form-${id}`} />
               </div>
-              <div className="font-bold text-foreground text-xs text-center">
+              <div className="font-bold text-foreground text-xs text-center flex-shrink-0 whitespace-nowrap">
                 {amount}
               </div>
             </div>
@@ -781,15 +793,13 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
                 active={true}
                 subItems={[
                   { label: "Entry", active: true },
-                  { label: "Authorization" },
-                  { label: "My Transactions" }
+                  { label: "Authorization" }
                 ]}
               />
               {sidebarOpen && expandedGroups.has('forms') && (
                 <div className="space-y-1">
                   <NavigationSubItem label="Entry" active={true} />
                   <NavigationSubItem label="Authorization" />
-                  <NavigationSubItem label="My Transactions" />
                 </div>
               )}
               
@@ -964,7 +974,7 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
 
           {/* Main Content */}
           <div className={`flex-1 h-screen overflow-x-hidden transition-all duration-300 ease-in-out ${sidebarOpen ? 'md:ml-[250px]' : 'md:ml-[50px]'} pt-mobile-nav md:pt-0`}>
-            <div className="px-4 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] h-full flex flex-col overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-background">
+            <div className="pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] md:px-4 md:pl-[max(1rem,env(safe-area-inset-left))] md:pr-[max(1rem,env(safe-area-inset-right))] h-full flex flex-col overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-background">
               {/* Header */}
               <div className="hidden md:block">
                 <div className="flex flex-row items-center justify-between max-h-[51px] py-4.5 w-full border-b">
@@ -1112,9 +1122,9 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
               </div>
 
               {/* Controls Bar */}
-              <div className="relative mx-auto flex h-full w-full max-w-7xl flex-0 flex-col">
+              <div className="relative mx-auto flex h-full w-full max-w-7xl px-4 md:px-2 flex-0 flex-col">
                 <div className="flex flex-row items-center justify-between py-4.5 w-full border-b">
-                  <div className="flex items-center gap-2 bg-sidebar rounded-lg px-3 h-11">
+                  <div className="flex items-center gap-2 bg-sidebar hover:bg-sidebar-accent rounded-lg px-3 h-10 border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]">
                     <div 
                       className={`relative rounded size-4 border cursor-pointer flex items-center justify-center ${
                         isAllSelected 
@@ -1132,51 +1142,50 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
                         <div className="size-2 bg-primary" />
                       )}
                     </div>
-                    {!isAllSelected && !isPartiallySelected && (
-                      <label 
-                        className="text-sm text-sidebar-foreground cursor-pointer select-none"
-                        onClick={toggleSelectAll}
-                      >
-                        Select All
-                      </label>
-                    )}
+                    <label 
+                      className="text-sm cursor-pointer select-none"
+                      onClick={toggleSelectAll}
+                    >
+                      {isAllSelected || isPartiallySelected ? (
+                        <>
+                          <span className="md:hidden">{selectedForms.size} Selected</span>
+                          <span className="hidden md:inline">Select All</span>
+                        </>
+                      ) : (
+                        "Select All"
+                      )}
+                    </label>
                   </div>
+
+                  <div className="flex-1" />
 
                   {/* Bulk Actions - Show when forms are selected */}
                   {selectedForms.size > 0 && (
-                    <div className="flex items-center gap-3 h-11 ml-4 px-0 py-2.5">
-                      <span className="text-sm text-primary font-medium">
-                        {selectedForms.size}
-                        <span className="hidden md:inline"> selected</span>
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowDeleteDialog(true)}
-                          className="h-11 px-4 text-sm border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground dark:hover:bg-destructive dark:hover:text-destructive-foreground"
-                        >
-                          <Trash2 className="size-5 md:mr-1.5" />
-                          <span className="hidden md:inline">Delete</span>
-                        </Button>
-                      </div>
+                    <div className="flex items-center gap-2 h-10">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                      >
+                        <Trash2 className="size-5 md:mr-1.5 text-destructive" />
+                        <span className="hidden md:inline">Delete</span>
+                      </Button>
                     </div>
                   )}
-
-                  <div className="flex-1" />
                   
                   {/* Mobile Action Buttons - show when no forms are selected */}
                   {selectedForms.size === 0 && (
                     <div className="md:hidden flex items-center gap-2">
                       <Button
-                        className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 h-11"
+                        className="bg-sidebar cursor-pointer hover:!bg-sidebar-accent px-4 h-10 border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                         onClick={() => setIsCreateFormSheetOpen(true)}
                       >
-                        <Edit className="size-5" />
+                        <Edit className="size-5 text-primary" />
                       </Button>
                       
                       <Button
-                        variant="outline"
-                        className="px-4 cursor-pointer h-11"
+                        variant="ghost"
+                        className="px-4 cursor-pointer h-10 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                         onClick={() => setIsHistorySheetOpen(true)}
                       >
                         <MoreVertical className="size-5" />
@@ -1186,27 +1195,34 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
                   
                   {/* View Toggle Buttons - only show on desktop when no forms are selected */}
                   {selectedForms.size === 0 && (
-                    <div className="hidden md:flex flex-row gap-1 h-[34px] items-center justify-center px-1 py-1 bg-sidebar rounded-lg">
+                    <div className="hidden md:flex flex-row h-9 items-center justify-center bg-sidebar-accent rounded-lg relative shadow-[0_0_12px_rgba(0,0,0,0.06)]">
+                      <div 
+                        className="absolute h-9 bg-sidebar rounded-lg transition-transform duration-200 ease-in-out left-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                        style={{
+                          width: '50%',
+                          transform: currentViewMode === 'stacked' ? 'translateX(0)' : 'translateX(100%)'
+                        }}
+                      />
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded text-xs cursor-pointer transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'stacked' 
-                                ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                                : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                                ? 'text-sidebar-primary font-medium' 
+                                : 'text-sidebar-foreground font-normal hover:text-sidebar-primary'
                         }`}
                       >
-                        <List className="size-3.5" />
+                        <List className="size-5" />
                         List
                       </button>
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded cursor-pointer text-xs transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg cursor-pointer text-sm transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'grid' 
-                                ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                                : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                                ? 'text-sidebar-primary font-medium' 
+                                : 'text-sidebar-foreground font-normal hover:text-sidebar-primary'
                         }`}
                       >
-                        <Grid3x3 className="size-3.5" />
+                        <Grid3x3 className="size-5" />
                         Grid
                       </button>
                     </div>
@@ -1217,7 +1233,7 @@ export default function FormsListPage({ onFormClick, onFormTypeSelect, sidebarOp
               {/* Content */}
               <div className="relative mx-auto flex w-full max-w-7xl flex-1 overflow-hidden">
                 {/* Scrollable content */}
-                <div className="h-full w-full overflow-y-auto pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="h-full w-full overflow-y-auto pt-4 px-4 md:px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {isLoading ? (
                     currentViewMode === 'stacked' ? (
                       <div className="space-y-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]">

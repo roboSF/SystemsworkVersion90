@@ -185,7 +185,7 @@ export default function ResponsiveDialog({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         
-        <div className="py-4">
+        <div className="pt-4">
           {children}
         </div>
         

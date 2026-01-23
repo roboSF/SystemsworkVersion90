@@ -22,12 +22,12 @@ export const getNavigationGroups = (svgPaths: any): NavigationGroup[] => [
     active: true,
     subItems: [
       { 
-        label: "Entry", 
+        label: "Forms Entry", 
         active: true,
         icon: FilePenLine
       },
       { 
-        label: "Authorization",
+        label: "Forms Authorization",
         icon: Stamp
       }
     ]

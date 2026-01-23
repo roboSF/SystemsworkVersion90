@@ -2,9 +2,9 @@
 
 :root {
   --font-size: 14px;
-  --background: #ffffff;
+  --background: #F7F7F7;
   --foreground: #212529;
-  --card: #f5f5f5;
+  --card: #ffffff;
   --card-foreground: #212529;
   --popover: #ffffff;
   --popover-foreground: #212529;
@@ -12,7 +12,7 @@
   --primary-foreground: #ffffff;
   --secondary: #f8f9fa;
   --secondary-foreground: #212529;
-  --muted: #f8f9fa;
+  --muted: #e9ecef;
   --muted-foreground: #6c757d;
   --accent: #e7f3ff;
   --accent-foreground: #212529;
@@ -31,11 +31,11 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: #f5f5f5;
+  --sidebar: #ffffff;
   --sidebar-foreground: #868e96;
   --sidebar-primary: #212529;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e9ecef;
+  --sidebar-accent: #f8f9fa;
   --sidebar-accent-foreground: #212529;
   --sidebar-border: #e3e6ed;
   --sidebar-ring: #20a0ef;
@@ -584,7 +584,7 @@ html {
     border-bottom: 1px solid #e3e6ed !important;
     border-right: 1px solid #e3e6ed !important;
   }
-
+  
   /* Target tooltips with popover background and sidebar borders (the navigation menu style) */
   .bg-popover.border-sidebar-border [data-radix-tooltip-arrow],
   .bg-popover.shadow-lg [data-radix-tooltip-arrow] {
@@ -597,5 +597,114 @@ html {
     border-left: 1px solid transparent !important;
     border-bottom: 1px solid var(--color-sidebar-border) !important;
     border-right: 1px solid var(--color-sidebar-border) !important;
+  }
+
+  /**
+   * Sonner Toast Custom Styling
+   * - Animated background color to indicate duration
+   * - Repositioned close button inside toast aligned to right
+   */
+  
+  /* Override toast container position to move it higher */
+  [data-sonner-toaster] {
+    bottom: 40px !important;
+  }
+  
+  [data-sonner-toast] {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Background animation to indicate time remaining */
+  [data-sonner-toast]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.06);
+    animation: toastProgress 4s linear forwards;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Dark mode background animation */
+  .dark [data-sonner-toast]::before {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  @keyframes toastProgress {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
+
+  /* Ensure toast content is above the animated background */
+  [data-sonner-toast] > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Position close button inside toast on the right */
+  [data-sonner-toast] [data-button] {
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: auto !important;
+    z-index: 2 !important;
+  }
+
+  /* Add padding to toast content to prevent overlap with close button */
+  [data-sonner-toast] [data-content] {
+    padding-right: 40px !important;
+  }
+
+  /* Style the close button */
+  [data-sonner-toast] [data-close-button] {
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: auto !important;
+    z-index: 2 !important;
+    opacity: 0.7 !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  [data-sonner-toast] [data-close-button]:hover {
+    opacity: 1 !important;
+  }
+
+  /**
+   * AI Upload Button Animations
+   * - ai-rainbow-sweep: Sweeping rainbow gradient effect (left to right)
+   */
+  @keyframes ai-rainbow-sweep {
+    0% {
+      background-position: 200% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  @keyframes ai-icon-color-sweep {
+    0%, 100% {
+      color: rgb(168, 85, 247); /* Purple */
+    }
+    25% {
+      color: rgb(236, 72, 153); /* Pink */
+    }
+    50% {
+      color: rgb(59, 130, 246); /* Blue */
+    }
+    75% {
+      color: rgb(6, 182, 212); /* Cyan */
+    }
   }
 }

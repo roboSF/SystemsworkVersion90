@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Plus, Edit, Copy, Split, Trash2, List, Grid3x3, Check, Settings, User, LogOut, Sun, Moon, Monitor, Cog, FileText, PanelRightOpen, PanelRightClose, SquareCheckBig, BadgeCheck, History } from "lucide-react";
+import { Menu, X, Plus, Edit, Copy, Split, Trash2, List, Grid3x3, Check, Settings, User, LogOut, Sun, Moon, Monitor, Cog, FileText, PanelRightOpen, PanelRightClose, SquareCheckBig, BadgeCheck, History, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
@@ -233,10 +233,8 @@ export default function AuthorizationPage({
           </span>
         )}
         {sidebarOpen && (
-          <div className={`size-2.5 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
-            <svg className={`block size-full group-hover:fill-sidebar-primary transition-all ${shouldHighlightMaster ? 'drop-shadow-sm' : ''}`} fill={shouldHighlightMaster ? "var(--color-sidebar-primary)" : "var(--color-sidebar-foreground)"} viewBox="0 0 16 16">
-              <path d="M4.646 1.646a.5.5 0 0 1 .707.707l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.707.707L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
-            </svg>
+          <div className={`transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
+            <ChevronRight className="size-4" />
           </div>
         )}
       </div>
@@ -345,58 +343,73 @@ export default function AuthorizationPage({
     
     return (
       <div 
-        className={`bg-sidebar relative rounded-[10px] w-full border border-border ${isSelected ? 'ring-2 ring-ring ring-opacity-50' : ''} cursor-pointer hover:shadow-md transition-all`}
+        className={`bg-sidebar relative rounded-[10px] w-full border ${isSelected ? 'border-primary' : 'border-sidebar'} cursor-pointer hover:shadow-md transition-all`}
         onClick={() => handleFormClick(id)}
       >
-        <div className="flex flex-row gap-4 items-top justify-start p-4">
+        <div className="flex flex-row gap-4 p-4 overflow-hidden">
           {/* Checkbox */}
-          <div className="flex flex-col gap-[15px] h-20 items-start justify-start overflow-clip pb-[5px] pt-1 px-1">
-            <div 
-              className={`relative rounded size-4 border cursor-pointer flex items-center justify-center ${
-                isSelected 
-                  ? 'bg-primary border-primary' 
-                  : 'bg-card border-primary hover:border-2'
-              }`}
-              onClick={(e) => toggleFormSelection(id, e)}
-            >
-              {isSelected && (
-                <Check className="size-4 text-primary-foreground" />
-              )}
-            </div>
+          <div 
+            className={`rounded size-4 border cursor-pointer flex items-center justify-center mt-1 flex-shrink-0 ${
+              isSelected 
+                ? 'bg-primary border-primary' 
+                : 'bg-card border-primary hover:border-2'
+            }`}
+            onClick={(e) => toggleFormSelection(id, e)}
+          >
+            {isSelected && <Check className="size-4 text-primary-foreground" />}
           </div>
 
-          {/* Image */}
-          <div className="relative rounded-[10px] size-20 border border-border">
-            <div
-              className="absolute bg-[position:50%_50%] bg-[rgba(0,0,0,0.9)] bg-contain inset-0 rounded-[10px]"
-              style={{ backgroundImage: `url('${image}')` }}
-            />
-            {hasMultipleImages && (
-              <div className="absolute flex flex-col font-['Roboto:Regular',_sans-serif] font-normal justify-center leading-[0] left-10 size-20 text-[#ffffff] text-[16px] text-center top-[39.8px] translate-x-[-50%] translate-y-[-50%]">
-                <p className="block leading-[1.5]">+1</p>
-              </div>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="basis-0 flex flex-col gap-4 grow items-start justify-start px-0 py-0 self-stretch">
-            <div className="flex flex-row items-start justify-between w-full">
-              <div className="text-primary text-sm">{type}</div>
-              <div className="flex items-center gap-2">
-                {badge && (
-                  <div className="bg-warning text-success-foreground text-xs px-2 py-1 rounded">
-                    {badge}
+          <div className="flex flex-col gap-4 flex-grow min-w-0">
+            <div className="flex flex-row gap-4 items-start justify-start min-w-0">
+              {/* Image */}
+              <div className="relative rounded-[10px] size-20 border border-border flex-shrink-0">
+                <div
+                  className="absolute bg-[position:50%_50%] bg-[rgba(0,0,0,0.9)] bg-contain inset-0 rounded-[10px]"
+                  style={{ backgroundImage: `url('${image}')` }}
+                />
+                {hasMultipleImages && (
+                  <div className="absolute flex flex-col font-['Roboto:Regular',_sans-serif] font-normal justify-center leading-[0] left-10 size-20 text-[#ffffff] text-[16px] text-center top-[39.8px] translate-x-[-50%] translate-y-[-50%]">
+                    <p className="block leading-[1.5]">+1</p>
                   </div>
                 )}
               </div>
+
+              {/* Content */}
+              <div className="basis-0 flex flex-col gap-4 grow items-start justify-start px-0 py-0 self-stretch min-w-0">
+                <div className="flex flex-row items-start justify-between w-full min-w-0 gap-2">
+                  <div className="text-primary text-sm flex-shrink-0">{type}</div>
+                  <div className="flex items-center gap-2 min-w-0">
+                    {badge && (
+                      <div className="bg-warning text-warning-foreground text-xs px-2 py-1 rounded truncate">
+                        {badge}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-foreground text-sm flex items-center gap-2 flex-nowrap overflow-hidden min-w-0 w-full">
+                  <span className="whitespace-nowrap flex-shrink-0">#{id}</span>
+                  {date && (
+                    <>
+                      <span className="border-l border-border self-stretch flex-shrink-0"></span>
+                      <span className="whitespace-nowrap flex-shrink-0">{date}</span>
+                    </>
+                  )}
+                  {description && (
+                    <>
+                      <span className="border-l border-border self-stretch flex-shrink-0"></span>
+                      <span className="truncate min-w-0 block">{description}</span>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="text-foreground text-sm">
-              #{id} | {date} | {description}
-            </div>
-            <div className="flex flex-row items-end justify-between w-full">
-              {/* Avatar group */}
-              <AvatarGroup avatars={avatars} size="md" uniquePrefix={`auth-form-${id}`} />
-              <div className="font-bold text-foreground text-xs text-center">
+            
+            {/* Avatars and Amount - Full Width Row */}
+            <div className="flex flex-row items-center justify-between w-full min-w-0 gap-2">
+              <div className="flex flex-row items-center justify-start min-w-0">
+                <AvatarGroup avatars={avatars} size="md" uniquePrefix={`auth-form-${id}`} />
+              </div>
+              <div className="font-bold text-foreground text-xs text-center flex-shrink-0 whitespace-nowrap">
                 {amount}
               </div>
             </div>
@@ -631,21 +644,19 @@ export default function AuthorizationPage({
               
               {/* Forms Group */}
               <NavigationGroupItem 
-                icon={svgPaths.p2973b500} 
-                label="Forms" 
-                groupId="forms" 
+                icon={svgPaths.p2973b500}
+                label="Forms"
+                groupId="forms"
                 active={true}
                 subItems={[
                   { label: "Entry" },
-                  { label: "Authorization", active: true },
-                  { label: "My Transactions" }
+                  { label: "Authorization", active: true }
                 ]}
               />
               {sidebarOpen && expandedGroups.has('forms') && (
                 <div className="space-y-1">
                   <NavigationSubItem label="Entry" />
                   <NavigationSubItem label="Authorization" active={true} />
-                  <NavigationSubItem label="My Transactions" />
                 </div>
               )}
               
@@ -653,7 +664,7 @@ export default function AuthorizationPage({
               
               {/* Admin Group */}
               <NavigationGroupItem 
-                icon={svgPaths.p3ad82f80} 
+                icon={svgPaths.p3ad82f80}
                 label="Admin" 
                 groupId="admin"
                 subItems={[
@@ -819,8 +830,8 @@ export default function AuthorizationPage({
           </div>
 
           {/* Main Content Area */}
-          <div className={`flex-1 transition-width duration-300 ease-in-out ${sidebarOpen ? 'md:ml-[250px]' : 'md:ml-[50px]'}`}>
-            <div className="pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] bg-background min-h-full pt-mobile-nav">
+          <div className={`flex-1 h-screen overflow-x-hidden transition-all duration-300 ease-in-out ${sidebarOpen ? 'md:ml-[250px]' : 'md:ml-[50px]'} pt-mobile-nav md:pt-0`}>
+            <div className="pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] md:px-4 md:pl-[max(1rem,env(safe-area-inset-left))] md:pr-[max(1rem,env(safe-area-inset-right))] h-full flex flex-col overflow-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-background">
               {/* Header */}
               <div className="hidden md:block">
                 <div className="flex flex-row items-center justify-between max-h-[51px] py-4.5 w-full border-b">
@@ -844,10 +855,9 @@ export default function AuthorizationPage({
                 </div>
               </div>
 
-              {/* Mobile Header - History button */}
-              <div className="md:hidden">
+              {/* Mobile Header - Hidden */}
+              <div className="hidden">
                 <div className="flex flex-row items-center justify-end py-4 border-b">
-                  
                   {/* Mobile History Button */}
                   <Button
                     onClick={() => handleHistoryItemSelect('History')}
@@ -862,9 +872,9 @@ export default function AuthorizationPage({
               </div>
 
               {/* Controls Bar */}
-              <div className="relative mx-auto flex h-full w-full max-w-7xl flex-1 flex-col">
+              <div className="relative mx-auto flex h-full w-full max-w-7xl px-4 md:px-2 flex-0 flex-col">
                 <div className="flex flex-row items-center justify-between py-4.5 w-full border-b">
-                  <div className="flex items-center gap-2 bg-sidebar rounded-lg px-3 h-[34px]">
+                  <div className="flex items-center gap-2 bg-sidebar hover:bg-sidebar-accent rounded-lg px-3 h-10 border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]">
                     <div 
                       className={`relative rounded size-4 border cursor-pointer flex items-center justify-center ${
                         isAllSelected 
@@ -882,62 +892,80 @@ export default function AuthorizationPage({
                         <div className="size-2 bg-primary" />
                       )}
                     </div>
-                    {!isAllSelected && !isPartiallySelected && (
-                      <label 
-                        className="text-xs text-sidebar-foreground cursor-pointer select-none"
-                        onClick={toggleSelectAll}
-                      >
-                        Select All
-                      </label>
-                    )}
+                    <label 
+                      className="text-sm cursor-pointer select-none"
+                      onClick={toggleSelectAll}
+                    >
+                      {isAllSelected || isPartiallySelected ? (
+                        <>
+                          <span className="md:hidden">{selectedForms.size} Selected</span>
+                          <span className="hidden md:inline">Select All</span>
+                        </>
+                      ) : (
+                        "Select All"
+                      )}
+                    </label>
                   </div>
+
+                  <div className="flex-1" />
 
                   {/* Bulk Actions - Show when forms are selected */}
                   {selectedForms.size > 0 && (
-                    <div className="flex items-center gap-3 h-[34px] ml-4 px-0 py-2.5">
-                      <span className="text-sm text-primary font-medium">
-                        {selectedForms.size}
-                        <span className="hidden md:inline"> selected</span>
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => {/* Handle bulk authorize */}}
-                          className="h-8 px-3 text-xs"
-                        >
-                          <BadgeCheck className="size-4 mr-1" />
-                          Authorize
-                        </Button>
-                      </div>
+                    <div className="flex items-center gap-2 h-10">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {/* Handle bulk authorize */}}
+                        className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                      >
+                        <BadgeCheck className="size-5 md:mr-1.5 text-primary" />
+                        <span className="hidden md:inline">Authorize</span>
+                      </Button>
                     </div>
                   )}
-
-                  <div className="flex-1" />
+                  
+                  {/* Mobile Action Buttons - show when no forms are selected */}
+                  {selectedForms.size === 0 && (
+                    <div className="md:hidden flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        className="px-4 cursor-pointer h-10 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                        onClick={() => handleHistoryItemSelect('History')}
+                      >
+                        <History className="size-5" />
+                      </Button>
+                    </div>
+                  )}
                   
                   {/* View Toggle Buttons - only show on desktop when no forms are selected */}
                   {selectedForms.size === 0 && (
-                    <div className="hidden md:flex flex-row gap-1 h-[34px] items-center justify-center px-1 py-1 bg-sidebar rounded-lg">
+                    <div className="hidden md:flex flex-row h-9 items-center justify-center bg-sidebar-accent rounded-lg relative shadow-[0_0_12px_rgba(0,0,0,0.06)]">
+                      <div 
+                        className="absolute h-9 bg-sidebar rounded-lg transition-transform duration-200 ease-in-out left-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                        style={{
+                          width: '50%',
+                          transform: currentViewMode === 'stacked' ? 'translateX(0)' : 'translateX(100%)'
+                        }}
+                      />
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded text-xs transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'stacked' 
-                                ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                                : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                                ? 'text-sidebar-primary font-medium' 
+                                : 'text-sidebar-foreground hover:text-sidebar-primary'
                         }`}
                       >
-                        <List className="size-3.5" />
+                        <List className="size-5" />
                         List
                       </button>
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded text-xs transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg cursor-pointer text-sm transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'grid' 
-                                ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                                : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                                ? 'text-sidebar-primary font-medium' 
+                                : 'text-sidebar-foreground hover:text-sidebar-primary'
                         }`}
                       >
-                        <Grid3x3 className="size-3.5" />
+                        <Grid3x3 className="size-5" />
                         Grid
                       </button>
                     </div>
@@ -946,28 +974,42 @@ export default function AuthorizationPage({
               </div>
 
               {/* Content */}
-              <div className="relative mx-auto flex h-full w-full max-w-7xl flex-1 flex-col py-4">
-                {currentViewMode === 'stacked' ? (
-                  <div className="space-y-4">
-                    {/* Authorization Forms */}
-                    {authorizationFormsData.map((form) => (
-                      <FormCard 
-                        key={form.id}
-                        id={form.id}
-                        type={form.type}
-                        date={form.date}
-                        description={form.description}
-                        amount={form.amount}
-                        avatars={form.avatars}
-                        badge={form.badge}
-                        image={form.image}
-                        hasMultipleImages={form.hasMultipleImages}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <GridViewComponent />
-                )}
+              <div className="relative mx-auto flex w-full max-w-7xl flex-1 overflow-hidden">
+                {/* Scrollable content */}
+                <div className="h-full w-full overflow-y-auto pt-4 px-4 md:px-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {currentViewMode === 'stacked' ? (
+                    <div className="space-y-4 pb-[calc(env(safe-area-inset-bottom)+4rem)]">
+                      {/* Authorization Forms */}
+                      {authorizationFormsData.map((form) => (
+                        <FormCard 
+                          key={form.id}
+                          id={form.id}
+                          type={form.type}
+                          date={form.date}
+                          description={form.description}
+                          amount={form.amount}
+                          avatars={form.avatars}
+                          badge={form.badge}
+                          image={form.image}
+                          hasMultipleImages={form.hasMultipleImages}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="pb-[calc(env(safe-area-inset-bottom)+4rem)]">
+                      <GridViewComponent />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Gradient overlay */}
+                <div 
+                  className="absolute bottom-0 inset-x-0 pointer-events-none z-10"
+                  style={{
+                    height: 'calc(env(safe-area-inset-bottom) + 3rem)',
+                    background: 'linear-gradient(to top, hsl(var(--background)) 0%, transparent 100%)'
+                  }}
+                />
               </div>
             </div>
           </div>

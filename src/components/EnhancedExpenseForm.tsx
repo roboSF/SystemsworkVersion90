@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Plus, PlusCircle, Calendar, Upload, Edit, Menu, X, Trash2, Copy, Split, Check, List, Grid3x3, Save, XIcon, Settings, User, LogOut, Sun, Moon, Monitor, Cog, FileText, PanelRightOpen, PanelRightClose, ChevronRight, Maximize2, Minimize2, MoreVertical, Download, FileSpreadsheet, Send, MessageSquare, CornerUpLeft, BadgeCheck, Sparkles, ZoomIn, ZoomOut, ChevronLeft, ChevronRight as ChevronRightIcon, File, Image as ImageIcon, FileType, Link2Off, Link2, Paperclip, RotateCcw, RotateCw, Eye, EyeOff} from "lucide-react";
+import { Plus, PlusCircle, SquarePlus, Calendar, Upload, Edit, Menu, X, Trash2, Copy, Split, Check, List, Grid3x3, Save, XIcon, Settings, User, LogOut, Sun, Moon, Monitor, Cog, FileText, PanelRightOpen, PanelRightClose, ChevronRight, Maximize2, Minimize2, MoreVertical, Download, FileSpreadsheet, Send, MessageSquare, CornerUpLeft, BadgeCheck, Sparkles, ZoomIn, ZoomOut, ChevronLeft, ChevronRight as ChevronRightIcon, File, Image as ImageIcon, FileType, Link2Off, Link2, Paperclip, RotateCcw, RotateCw, Eye, EyeOff, Loader2} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "./ui/sheet";
 import ResponsiveDialog from "./ResponsiveDialog";
@@ -181,6 +181,8 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['forms'])); // Forms expanded by default
   const [isLoadingRows, setIsLoadingRows] = useState(true);
   const [isLoadingHeader, setIsLoadingHeader] = useState(true);
+  const [isValidated, setIsValidated] = useState(false); // Track if Save & Validate has been clicked
+  const [isValidating, setIsValidating] = useState(false); // Track validation in progress
 
   // Split modal state
   const [showSplitModal, setShowSplitModal] = useState(false);
@@ -1631,7 +1633,7 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
     setIsProcessing(true);
 
     // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     // Mock extracted data - in a real implementation, this would come from an AI service
     const mockExtractedExpenses: ExpenseRow[] = [
@@ -1816,7 +1818,7 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
 
   const SkeletonExpenseRow = () => {
     return (
-      <div className="bg-sidebar relative rounded-[10px] w-full border border-border">
+      <div className="bg-sidebar relative rounded-[10px] w-full border border-sidebar shadow-[0_0_12px_rgba(0,0,0,0.06)]">
         <div className="flex flex-row gap-4 items-start justify-start p-4">
           {/* Checkbox and Status skeleton */}
           <div className="flex flex-col gap-[15px] h-20 items-start justify-start overflow-clip pb-[5px] pt-1 px-1">
@@ -1920,13 +1922,18 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
       warning: 'border-warning',
       error: 'border-destructive',
       success: 'border-success',
-      neutral: 'border-border'
+      neutral: 'border-sidebar'
     }[row.status];
 
     const isSelected = selectedRows.has(row.id);
 
+    // Only show validation status if Save & Validate has been clicked
+    const showValidation = isValidated;
+    const effectiveBorderColor = showValidation ? borderColor : 'border-sidebar';
+    const effectiveStatus = showValidation ? row.status : 'neutral';
+
     return (
-      <div className={`bg-sidebar relative rounded-[10px] w-full border ${isSelected ? 'border-primary ring-2 ring-ring ring-opacity-50' : borderColor} cursor-pointer hover:shadow-md transition-all group`}>
+      <div className={`bg-sidebar relative rounded-[10px] w-full border ${isSelected ? 'border-primary' : effectiveBorderColor} cursor-pointer shadow-[0_0_12px_rgba(0,0,0,0.06)] transition-all group`}>
         <div className="flex flex-row gap-4 p-4">
           {/* Checkbox and Status Column */}
           <div 
@@ -1945,7 +1952,7 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
                 <Check className="size-4 text-primary-foreground" />
               )}
             </div>
-            <StatusIcon status={row.status} />
+            <StatusIcon status={effectiveStatus} />
           </div>
 
           {/* Main Content Column */}
@@ -2160,110 +2167,133 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
         
         {/* Desktop: Drag & Drop Upload Area */}
         <div 
-          className={`hidden md:block relative w-full transition-all cursor-pointer ${
-            isDragging 
-              ? 'bg-blue-50 dark:bg-blue-950 border-1 border-dashed border-blue-500 rounded-[9px]' 
-              : isProcessing 
-                ? 'bg-gradient-to-r from-purple-50 via-fuchsia-50 to-pink-50 dark:from-purple-950/30 dark:via-fuchsia-950/30 dark:to-pink-950/30 rounded-[10px]' 
-                : 'bg-background'
-          }`}
-          style={!isDragging && !isProcessing ? {
-            borderRadius: '10px',
-            padding: '1px',
-            background: 'linear-gradient(90deg, #f43f5e, #ec4899, #a855f7, #8b5cf6, #6366f1, #3b82f6, #06b6d4)',
-          } : isProcessing ? {
-            borderRadius: '10px',
-            padding: '1px',
-            background: 'linear-gradient(90deg, #a855f7, #ec4899, #8b5cf6, #6366f1, #3b82f6)',
-          } : undefined}
-          onDragEnter={handleDragEnter}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => !isProcessing && fileInputRef.current?.click()}
+          className="hidden md:block relative w-full"
         >
-          <div className={`w-full flex flex-row items-center justify-center gap-3 rounded-[9px] py-3 px-4 transition-colors ${
-            isDragging 
-              ? '' 
-              : isProcessing 
-                ? 'bg-background' 
-                : 'bg-background hover:bg-accent'
-          }`}>
-            {isProcessing ? (
-              <>
-                <Sparkles className="size-5 animate-pulse" style={{ 
-                  animation: 'colorShift 2s ease-in-out infinite',
-                  color: 'rgb(147, 51, 234)'
-                }} />
-                <span className="text-sm text-muted-foreground">Processing document...</span>
-                <style>{`
-                  @keyframes colorShift {
-                    0%, 100% { color: rgb(147, 51, 234); }
-                    33% { color: rgb(236, 72, 153); }
-                    66% { color: rgb(59, 130, 246); }
-                  }
-                `}</style>
-              </>
-            ) : (
-              <>
-                <Sparkles className={`size-5 ${isDragging ? 'text-blue-600' : 'text-purple-500'}`} />
-                <div className="text-center">
-                  <span className={`text-sm ${isDragging ? 'text-blue-600' : 'text-foreground'}`}>
-                    {isDragging ? 'Drop receipt here' : 'Drop receipt or click to upload'}
+          <div className={`w-full flex flex-row items-center justify-center gap-3 pt-4 transition-colors`}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isProcessing) {
+                  fileInputRef.current?.click();
+                }
+              }}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`w-full h-11 flex flex-row items-center justify-center gap-3 cursor-pointer rounded-lg transition-all ${
+                isDragging 
+                  ? 'bg-blue-50 dark:bg-blue-950 border-2 border-dashed border-blue-500' 
+                  : 'bg-sidebar hover:bg-sidebar-accent shadow-[0_0_12px_rgba(0,0,0,0.06)]'
+              }`}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <Sparkles className="size-5 animate-pulse" style={{ 
+                    animation: 'colorShift 2s ease-in-out infinite',
+                    color: 'rgb(147, 51, 234)'
+                  }} />
+                  <span 
+                    className="text-sm"
+                    style={{
+                      background: 'linear-gradient(90deg, rgb(168, 85, 247), rgb(236, 72, 153), rgb(59, 130, 246), rgb(6, 182, 212), rgb(168, 85, 247))',
+                      backgroundSize: '200% 100%',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      color: 'transparent',
+                      animation: 'gradientSlide 3s linear infinite'
+                    }}
+                  >
+                    Processing document...
                   </span>
-                  {!isDragging && (
-                    <span className="text-xs text-muted-foreground ml-1">
-                      - AI will extract data, or{' '}
-                      <button
-                        onClick={handleManualAdd}
-                        className="text-blue-600 hover:text-blue-700 underline cursor-pointer inline"
-                      >
-                        click here
-                      </button>
-                      {' '}to add manually
+                  <style>{`
+                    @keyframes colorShift {
+                      0%, 100% { color: rgb(147, 51, 234); }
+                      33% { color: rgb(236, 72, 153); }
+                      66% { color: rgb(59, 130, 246); }
+                    }
+                    @keyframes gradientSlide {
+                      0% { background-position: 0% 0%; }
+                      100% { background-position: 200% 0%; }
+                    }
+                  `}</style>
+                </>
+              ) : (
+                <>
+                  <Sparkles className={`size-5 ${isDragging ? 'text-blue-600' : 'text-purple-500'}`} />
+                  <div className="text-center">
+                    <span 
+                      className={`text-sm ${isDragging ? 'text-blue-600' : ''}`}
+                      style={isDragging ? {} : {
+                        background: 'linear-gradient(90deg, rgb(168, 85, 247), rgb(236, 72, 153), rgb(59, 130, 246), rgb(6, 182, 212), rgb(168, 85, 247))',
+                        backgroundSize: '200% 100%',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent'
+                      }}
+                    >
+                      {isDragging ? 'Drop receipt here' : 'Drop receipt or click to upload'}
                     </span>
-                  )}
-                </div>
-              </>
-            )}
+                    {!isDragging && (
+                      <span className="text-sm text-muted-foreground ml-1">
+                        - AI will extract data, or{' '}
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleManualAdd(e);
+                          }}
+                          className="text-blue-600 hover:text-blue-700 underline cursor-pointer inline"
+                        >
+                          click here
+                        </span>
+                        {' '}to add manually
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
         {/* Mobile: Two Separate Buttons */}
-        <div className="md:hidden flex gap-2">
+        <div className="md:hidden pt-4 md:p-2 flex gap-2">
           {/* AI Upload Button */}
           <Button
             onClick={() => !isProcessing && fileInputRef.current?.click()}
-            variant="outline"
-            className="flex-1 relative cursor-pointer"
             size="lg"
-            style={{
-              borderRadius: '8px',
-              padding: '1px',
-              background: isProcessing 
-                ? 'linear-gradient(90deg, #a855f7, #ec4899, #8b5cf6, #6366f1, #3b82f6)'
-                : 'linear-gradient(90deg, #f43f5e, #ec4899, #a855f7, #8b5cf6, #6366f1, #3b82f6, #06b6d4)',
-            }}
+            className="flex-1 cursor-pointer bg-sidebar hover:!bg-sidebar-accent border-0 h-10 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
           >
-            <div className={`w-full h-full flex items-center justify-center gap-2 rounded-[7px] py-3 px-4 transition-colors ${
-              isProcessing 
-                ? 'bg-gradient-to-r from-purple-50 via-fuchsia-50 to-pink-50 dark:from-purple-950/50 dark:via-fuchsia-950/50 dark:to-pink-950/50'
-                : 'bg-background hover:bg-accent'
-            }`}>
-              {isProcessing ? (
-                <>
-                  <Sparkles className="size-4 text-purple-600 dark:text-white animate-pulse" />
-                  <span className="text-sm bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:bg-none dark:text-white">
-                    Processing...
-                  </span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="size-4 text-purple-500" />
-                  <span className="text-sm">Upload</span>
-                </>
-              )}
-            </div>
+            {isProcessing ? (
+              <>
+                <Sparkles className="size-4 text-purple-600 dark:text-purple-400 animate-pulse" />
+                <span className="text-sm bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400">
+                  Processing...
+                </span>
+              </>
+            ) : (
+              <>
+                <Sparkles 
+                  className="size-5"
+                  style={{ 
+                    color: 'rgb(168, 85, 247)'
+                  }}
+                />
+                <span 
+                  className="text-sm"
+                  style={{ 
+                    background: 'linear-gradient(90deg, rgb(168, 85, 247), rgb(236, 72, 153), rgb(59, 130, 246), rgb(6, 182, 212), rgb(168, 85, 247))',
+                    backgroundSize: '200% 100%',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent'
+                  }}
+                >
+                  Upload
+                </span>
+              </>
+            )}
           </Button>
 
           {/* Manual Entry Button */}
@@ -2271,11 +2301,10 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
             onClick={handleManualAdd}
             disabled={isProcessing}
             size="lg"
-            variant="outline"
-            className="flex-1"
+            className="flex-1 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)] h-10"
           >
-            <Plus className="size-4 mr-2" />
-            <span className="text-md">New Line</span>
+            <SquarePlus className="size-5 text-foreground" />
+            <span className="text-md text-foreground">New Line</span>
           </Button>
         </div>
       </div>
@@ -2987,15 +3016,13 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
                 active={true}
                 subItems={[
                   { label: "Entry", active: sourcePage === "Entry" },
-                  { label: "Authorization", active: sourcePage === "Authorization" },
-                  { label: "My Transactions" }
+                  { label: "Authorization", active: sourcePage === "Authorization" }
                 ]}
               />
               {sidebarOpen && expandedGroups.has('forms') && (
                 <div className="space-y-1">
                   <NavigationSubItem label="Entry" active={sourcePage === "Entry"} />
                   <NavigationSubItem label="Authorization" active={sourcePage === "Authorization"} />
-                  <NavigationSubItem label="My Transactions" />
                 </div>
               )}
               
@@ -3170,7 +3197,7 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
 
           {/* Main Content */}
           <div className={`bg-background flex-1 transition-all duration-300 ease-in-out overflow-x-hidden ${sidebarOpen ? 'md:ml-[250px]' : 'md:ml-[50px]'} pt-mobile-nav md:pt-0`}>
-            <div className={`h-mobile-content md:h-screen flex flex-col overflow-hidden pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] ${
+            <div className={`h-mobile-content md:h-screen flex flex-col overflow-hidden md:pl-[max(1rem,env(safe-area-inset-left))] md:pr-[max(1rem,env(safe-area-inset-right))] ${
               currentViewMode === 'grid' && isGridExpanded ? '' : ''
             }`}>
               {/* Breadcrumb & Title with Action Buttons */}
@@ -3208,10 +3235,23 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
                       <Button
                         variant="outline"
                         className="md:px-3 px-4 cursor-pointer h-11 md:h-9 md:text-sm"
-                        onClick={() => {/* Handle save and validate */}}
+                        onClick={() => {
+                          setIsValidating(true);
+                          setTimeout(() => {
+                            setIsValidating(false);
+                            setIsValidated(true);
+                          }, 5000);
+                        }}
+                        disabled={isValidating}
                       >
-                        <Save className="size-5 md:size-4 md:mr-2" />
-                        <span className="hidden md:inline">Save & Validate</span>
+                        {isValidating ? (
+                          <Loader2 className="size-5 md:size-4 md:mr-2 animate-spin" />
+                        ) : (
+                          <Save className="size-5 md:size-4 md:mr-2" />
+                        )}
+                        <span className="hidden md:inline">
+                          {isValidating ? "Validating..." : "Save & Validate"}
+                        </span>
                       </Button>
                     )}
                     <Button
@@ -3400,7 +3440,7 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
               </div>
 
               {/* Form Header - Clickable to open offcanvas */}
-              <div className="relative mx-auto flex h-full w-full max-w-7xl flex-0 flex-col">
+              <div className="relative mx-auto flex h-full w-full max-w-7xl flex-0 flex-col px-4 md:px-2">
                 <div 
                   className="w-full overflow-x-auto cursor-pointer group custom-scrollbar border-b"
                   onClick={openHeaderModal}
@@ -3485,11 +3525,11 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
               </div>
 
               {/* Control Bar with Integrated Bulk Actions */}
-              <div className={`relative mx-auto flex w-full flex-0 flex-col ${
+              <div className={`relative mx-auto flex w-full flex-0 flex-col px-4 md:px-2 ${
                 currentViewMode === 'grid' && isGridExpanded ? 'max-w-none' : 'max-w-7xl'
               }`}>
                 <div className="flex flex-row items-center justify-between py-4.5 w-full border-b">
-                  <div className="flex items-center gap-2 bg-sidebar rounded-lg px-3 h-11">
+                  <div className="flex items-center gap-2 bg-sidebar hover:bg-sidebar-accent rounded-lg px-3 h-10 border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]">
                     <div 
                       className={`relative rounded size-4 border cursor-pointer flex items-center justify-center ${
                         isAllSelected 
@@ -3507,109 +3547,121 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
                         <div className="size-2 bg-primary" />
                       )}
                     </div>
-                    {!isAllSelected && !isPartiallySelected && (
-                      <label 
-                        className="text-sm text-sidebar-foreground cursor-pointer select-none"
-                        onClick={toggleSelectAll}
-                      >
-                        Select All
-                      </label>
-                    )}
+                    <label 
+                      className="text-sm cursor-pointer select-none"
+                      onClick={toggleSelectAll}
+                    >
+                      {isAllSelected || isPartiallySelected ? (
+                        <>
+                          <span className="md:hidden">{selectedRows.size} Selected</span>
+                          <span className="hidden md:inline">Select All</span>
+                        </>
+                      ) : (
+                        "Select All"
+                      )}
+                    </label>
                   </div>
+
+                  <div className="flex-1" />
 
                   {/* Bulk Actions - Show when rows are selected */}
                   {selectedRows.size > 0 && (
-                    <div className="flex items-center gap-3 h-11 ml-4 px-0 py-2.5">
-                      <span className="text-sm text-primary font-medium">
-                        {selectedRows.size}
-                        <span className="hidden md:inline"> selected</span>
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {sourcePage === "Authorization" ? (
+                    <div className="flex items-center gap-2 h-10">
+                      {sourcePage === "Authorization" ? (
+                        <Button
+                          variant="ghost"
+                          onClick={handlePartialReturn}
+                          className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                        >
+                          <CornerUpLeft className="size-5 md:mr-1.5 text-primary" />
+                          <span className="hidden md:inline">Partial Return</span>
+                        </Button>
+                      ) : (
+                        <>
                           <Button
-                            variant="outline"
-                            onClick={handlePartialReturn}
-                            className="h-11 px-4 text-sm"
+                            variant="ghost"
+                            onClick={handleBulkCopy}
+                            className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                           >
-                            <CornerUpLeft className="size-5 md:mr-1.5" />
-                            <span className="hidden md:inline">Partial Return</span>
+                            <Copy className="size-5 md:mr-1.5 text-primary" />
+                            <span className="hidden md:inline">Copy</span>
                           </Button>
-                        ) : (
-                          <>
+                          {selectedRows.size === 1 && (
                             <Button
-                              variant="outline"
-                              onClick={handleBulkUpdate}
-                              className="h-11 px-4 text-sm"
+                              variant="ghost"
+                              onClick={handleBulkSplit}
+                              className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                             >
-                              <Edit className="size-5 md:mr-1.5" />
-                              <span className="hidden md:inline">Update</span>
+                              <Split className="size-5 md:mr-1.5 text-primary" />
+                              <span className="hidden md:inline">Split</span>
                             </Button>
-                            <Button
-                              variant="outline"
-                              onClick={handleBulkCopy}
-                              className="h-11 px-4 text-sm"
-                            >
-                              <Copy className="size-5 md:mr-1.5" />
-                              <span className="hidden md:inline">Copy</span>
-                            </Button>
-                            {selectedRows.size === 1 && (
-                              <Button
-                                variant="outline"
-                                onClick={handleBulkSplit}
-                                className="h-11 px-4 text-sm"
-                              >
-                                <Split className="size-5 md:mr-1.5" />
-                                <span className="hidden md:inline">Split</span>
-                              </Button>
-                            )}
-                            <Button
-                              variant="outline"
-                              onClick={() => setShowDeleteDialog(true)}
-                              className="h-11 px-4 text-sm border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground dark:hover:bg-destructive dark:hover:text-destructive-foreground"
-                            >
-                              <Trash2 className="size-5 md:mr-1.5" />
-                              <span className="hidden md:inline">Delete</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                          )}
+                          <Button
+                            variant="ghost"
+                            onClick={() => setShowDeleteDialog(true)}
+                            className="cursor-pointer h-10 px-4 text-sm bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                          >
+                            <Trash2 className="size-5 md:mr-1.5 text-destructive" />
+                            <span className="hidden md:inline">Delete</span>
+                          </Button>
+                        </>
+                      )}
                     </div>
                   )}
-
-                  <div className="flex-1" />
                   
                   {/* Mobile Action Buttons - show when no rows are selected */}
                   {selectedRows.size === 0 && (
                     <div className="md:hidden flex items-center gap-2">
                       <Button
-                        variant="default"
-                        className="bg-primary cursor-pointer hover:bg-primary/90 text-primary-foreground px-4 h-11"
+                        variant="ghost"
+                        className="cursor-pointer h-10 px-4 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                         onClick={() => {/* Handle submit/authorize */}}
                       >
                         {sourcePage === "Authorization" ? (
-                          <BadgeCheck className="size-5" />
+                          <BadgeCheck className="size-5 text-primary" />
                         ) : (
-                          <Send className="size-5" />
+                          <Send className="size-5 text-primary" />
                         )}
                       </Button>
                       {sourcePage !== "Authorization" && (
-                        <Button
-                          variant="outline"
-                          className="px-4 cursor-pointer h-11"
-                          onClick={() => {/* Handle save and validate */}}
+                        <div 
+                          className={`w-full flex flex-row items-center justify-center gap-3 rounded-[9px] py-3 px-4 cursor-pointer ${
+                            isValidating 
+                              ? 'bg-gradient-to-r from-purple-50 via-fuchsia-50 to-pink-50 dark:from-purple-950/30 dark:via-fuchsia-950/30 dark:to-pink-950/30' 
+                              : 'bg-sidebar hover:bg-accent'
+                          }`}
+                          onClick={() => {
+                            if (!isValidating) {
+                              setIsValidating(true);
+                              setTimeout(() => {
+                                setIsValidating(false);
+                                setIsValidated(true);
+                              }, 5000);
+                            }
+                          }}
                         >
-                          <Save className="size-5" />
-                        </Button>
+                          {isValidating ? (
+                            <>
+                              <Loader2 className="size-5 text-purple-600 dark:text-white animate-spin" />
+                              <span className="text-sm bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:bg-none dark:text-white">Validating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="size-5 text-foreground" />
+                              <span className="text-sm text-foreground">Save & Validate</span>
+                            </>
+                          )}
+                        </div>
                       )}
                       <Button
-                        variant="outline"
-                        className="px-4 relative cursor-pointer h-11"
+                        variant="ghost"
+                        className="px-4 relative cursor-pointer h-10 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                         onClick={() => {
                           setIsReturnAction(false);
                           setShowMessagesModal(true);
                         }}
                       >
-                        <MessageSquare className="size-5" />
+                        <MessageSquare className="size-5 text-foreground" />
                         {messages.length > 0 && (
                           <span className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full flex items-center justify-center text-[10px] text-white ${
                             messages.some(m => m.isNew) ? 'bg-destructive' : 'bg-warning'
@@ -3619,38 +3671,45 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
                         )}
                       </Button>
                       <Button
-                        variant="outline"
-                        className="px-4 cursor-pointer h-11"
+                        variant="ghost"
+                        className="px-4 cursor-pointer h-10 bg-sidebar hover:!bg-sidebar-accent border-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
                         onClick={() => setIsMoreMenuOpen(true)}
                       >
-                        <MoreVertical className="size-5" />
+                        <MoreVertical className="size-5 text-foreground" />
                       </Button>
                     </div>
                   )}
                   
                   {/* View Toggle Buttons - only show on desktop when no rows are selected */}
                   {selectedRows.size === 0 && (
-                    <div className="hidden md:flex flex-row gap-1 h-[34px] items-center justify-center px-1 py-1 bg-sidebar rounded-lg">
+                    <div className="hidden md:flex flex-row h-9 items-center justify-center bg-sidebar-accent rounded-lg relative shadow-[0_0_12px_rgba(0,0,0,0.06)]">
+                      <div 
+                        className="absolute h-9 bg-sidebar rounded-lg transition-transform duration-200 ease-in-out left-0 shadow-[0_0_12px_rgba(0,0,0,0.06)]"
+                        style={{
+                          width: '50%',
+                          transform: currentViewMode === 'stacked' ? 'translateX(0)' : 'translateX(100%)'
+                        }}
+                      />
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded text-xs cursor-pointer transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'stacked' 
-                            ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                            : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                            ? 'text-sidebar-primary font-medium' 
+                            : 'text-sidebar-foreground hover:text-sidebar-primary'
                         }`}
                       >
-                        <List className="size-3.5" />
+                        <List className="size-5" />
                         List
                       </button>
                       <button
                         onClick={toggleViewMode}
-                        className={`px-3 py-1.5 rounded text-xs cursor-pointer transition-colors flex items-center gap-1.5 ${
+                        className={`h-9 px-3 rounded-lg cursor-pointer text-sm transition-colors duration-200 flex items-center gap-1.5 relative z-10 flex-1 justify-center ${
                           currentViewMode === 'grid' 
-                            ? 'bg-sidebar-accent text-sidebar-primary font-medium' 
-                            : 'hover:bg-sidebar-accent text-sidebar-foreground'
+                            ? 'text-sidebar-primary font-medium' 
+                            : 'text-sidebar-foreground hover:text-sidebar-primary'
                         }`}
                       >
-                        <Grid3x3 className="size-3.5" />
+                        <Grid3x3 className="size-5" />
                         Grid
                       </button>
                     </div>
@@ -3659,11 +3718,11 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
               </div>
 
               {/* Expenses List */}
-              <div className={`relative flex h-full w-full flex-1 flex-col py-4 overflow-y-auto ${
+              <div className={`relative flex h-full w-full flex-1 flex-col pb-4 overflow-y-auto ${
                 currentViewMode === 'grid' && isGridExpanded ? 'max-w-none mx-0' : 'max-w-7xl mx-auto'
               }`}>
                 {currentViewMode === 'stacked' ? (
-                  <div className="space-y-4 overflow-y-auto flex-1 min-h-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-[calc(env(safe-area-inset-bottom)+4rem)]">
+                  <div className="space-y-4 overflow-y-auto flex-1 min-h-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-[calc(env(safe-area-inset-bottom)+4rem)] px-4 md:px-2">
                     {/* Add New Expense - Stacked View */}
                     {sourcePage !== "Authorization" && <AddExpenseButton />}
                     
@@ -3717,11 +3776,11 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
           handleThemeModeClick={handleThemeModeClick}
           getThemeIcon={getThemeIcon}
           footer={
-            <div className="flex justify-between gap-3 w-full">
-              <Button variant="outline" onClick={closeHeaderModal} className="flex-1">
+            <div className="flex flex-row md:justify-end gap-3 w-full md:border-t md:border-border md:pt-4">
+              <Button variant="outline" onClick={closeHeaderModal} className="flex-1 md:flex-initial md:w-auto">
                 Cancel
               </Button>
-              <Button onClick={saveHeaderDetails} className="flex-1">
+              <Button onClick={saveHeaderDetails} className="flex-1 md:flex-initial md:w-auto">
                 Save Changes
               </Button>
             </div>
@@ -3950,11 +4009,11 @@ export default function EnhancedExpenseForm({ onBackToList, sidebarOpen, onToggl
           currentRow={editingRow ? rows.findIndex(r => r.id === editingRow.id) + 1 : undefined}
           totalRows={rows.length}
           footer={
-            <div className="flex justify-between gap-3 w-full">
-              <Button variant="outline" onClick={closeEditRowModal} className="flex-1">
+            <div className="flex flex-row md:justify-end gap-3 w-full md:border-t md:border-border md:pt-4">
+              <Button variant="outline" onClick={closeEditRowModal} className="flex-1 md:flex-initial md:w-auto">
                 Cancel
               </Button>
-              <Button onClick={saveEditedRow} className="flex-1">
+              <Button onClick={saveEditedRow} className="flex-1 md:flex-initial md:w-auto">
                 Save Changes
               </Button>
             </div>
