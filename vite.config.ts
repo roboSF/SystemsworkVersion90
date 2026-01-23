@@ -58,6 +58,7 @@
       target: 'esnext',
       outDir: 'build',
     },
+    publicDir: 'public',
     server: {
       port: 3000,
       open: true,
